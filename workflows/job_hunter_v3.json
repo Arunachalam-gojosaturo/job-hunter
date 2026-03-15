@@ -1,0 +1,249 @@
+{
+  "name": "Job Hunter Agent v3 🔥",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "minutes", "minutesInterval": 30 }]
+        }
+      },
+      "id": "trigger-1",
+      "name": "⏰ Trigger Every 30 Min",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "feeds-list",
+              "name": "feeds",
+              "value": "={{ [\n  {\"name\":\"r/forhire\",      \"url\":\"https://www.reddit.com/r/forhire/new/.rss\"},\n  {\"name\":\"r/slavelabour\",  \"url\":\"https://www.reddit.com/r/slavelabour/new/.rss\"},\n  {\"name\":\"r/webdev_jobs\", \"url\":\"https://www.reddit.com/r/webdev_jobs/new/.rss\"},\n  {\"name\":\"r/netsec\",       \"url\":\"https://www.reddit.com/r/netsec/new/.rss\"},\n  {\"name\":\"Upwork-Python\",  \"url\":\"https://www.upwork.com/ab/feed/jobs/rss?q=python+linux&sort=recency\"},\n  {\"name\":\"Upwork-Security\",\"url\":\"https://www.upwork.com/ab/feed/jobs/rss?q=cybersecurity+pentest&sort=recency\"},\n  {\"name\":\"Upwork-n8n\",     \"url\":\"https://www.upwork.com/ab/feed/jobs/rss?q=n8n+automation&sort=recency\"},\n  {\"name\":\"Upwork-Full\",    \"url\":\"https://www.upwork.com/ab/feed/jobs/rss?q=fullstack+developer&sort=recency\"}\n] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "feeds-node",
+      "name": "📋 Job Sources",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "feeds",
+        "options": {}
+      },
+      "id": "split-node",
+      "name": "Split Sources",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": { "response": { "responseFormat": "text" } }
+        }
+      },
+      "id": "fetch-node",
+      "name": "🌐 Fetch RSS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [660, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const xml = $input.first().json.data || '';\nconst feedName = $input.first().json.name || 'Unknown';\n\nconst KEYWORDS = ['python','linux','automation','cybersecurity','n8n','fullstack','full stack',\n  'web developer','ai agent','pentest','security','bash','nodejs','react','flask','django',\n  'docker','devops','api','scraping','bot','script','backend','fastapi'];\n\nconst items = [];\nconst itemMatches = xml.match(/<item[\\s\\S]*?<\\/item>/g) || [];\n\nconst getTag = (xml, tag) => {\n  const m = xml.match(new RegExp(`<${tag}[^>]*><!\\\\[CDATA\\\\[([\\\\s\\\\S]*?)\\\\]\\\\]><\\/${tag}>|<${tag}[^>]*>([\\\\s\\\\S]*?)<\\/${tag}>`));\n  return m ? (m[1] || m[2] || '').trim() : '';\n};\n\nfor (const item of itemMatches.slice(0, 20)) {\n  const title   = getTag(item, 'title');\n  const link    = getTag(item, 'link') || getTag(item, 'guid');\n  const desc    = getTag(item, 'description').replace(/<[^>]+>/g, ' ').substring(0, 600);\n  const pubDate = getTag(item, 'pubDate');\n  const text    = (title + ' ' + desc).toLowerCase();\n  const match   = KEYWORDS.some(k => text.includes(k));\n\n  if (match && title && title.length > 5) {\n    items.push({ json: {\n      title, link, desc, pubDate,\n      source: feedName,\n      jobId: Buffer.from(title + link).toString('base64').slice(0, 24)\n    }});\n  }\n}\n\nreturn items.length ? items : [{ json: { skip: true, source: feedName } }];"
+      },
+      "id": "parse-node",
+      "name": "🎯 Parse & Filter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [880, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [{
+            "id": "skip-check",
+            "leftValue": "={{ $json.skip }}",
+            "rightValue": true,
+            "operator": { "type": "boolean", "operation": "notEquals" }
+          }],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-node",
+      "name": "✅ Valid Job?",
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2,
+      "position": [1100, 300]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": { "__rl": true, "value": "gpt-3.5-turbo", "mode": "list" },
+        "messages": {
+          "values": [{
+            "content": "=Write a short freelancer proposal (under 120 words) for this job:\n\nTitle: {{ $json.title }}\nDescription: {{ $json.desc }}\n\nAbout the developer:\n- Expert in: Full Stack, Cybersecurity, Python, n8n, Linux/Arch, AI Agents\n- Delivers complete projects in 24 hours (built, tested, deployed)\n- Affordable rates, fast delivery\n\nRules:\n- Confident, human tone — not robotic\n- Mention 1-2 matching skills specifically\n- End with a clear call to action\n- Do NOT start with 'I am perfect'\n- Under 120 words"
+          }]
+        },
+        "options": {}
+      },
+      "id": "ai-node",
+      "name": "🤖 AI Generates Reply",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.4,
+      "position": [1320, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "t",  "name": "jobTitle",  "value": "={{ $('✅ Valid Job?').item.json.title }}", "type": "string" },
+            { "id": "l",  "name": "jobLink",   "value": "={{ $('✅ Valid Job?').item.json.link }}",  "type": "string" },
+            { "id": "d",  "name": "jobDesc",   "value": "={{ $('✅ Valid Job?').item.json.desc }}",  "type": "string" },
+            { "id": "s",  "name": "jobSource", "value": "={{ $('✅ Valid Job?').item.json.source }}", "type": "string" },
+            { "id": "r",  "name": "aiReply",   "value": "={{ $json.message.content }}", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "merge-node",
+      "name": "🔗 Merge Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1540, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.telegram.org/bot{{ $vars.TELEGRAM_BOT_TOKEN }}/sendMessage",
+        "method": "POST",
+        "sendBody": true,
+        "contentType": "json",
+        "body": {
+          "chat_id": "={{ $vars.TELEGRAM_CHAT_ID }}",
+          "text": "=🔥 *NEW JOB FOUND!*\n\n📋 {{ $json.jobTitle }}\n📍 {{ $json.jobSource }}\n\n✅ *Copy this reply:*\n```\n{{ $json.aiReply.substring(0,300) }}\n```\n\n🔗 {{ $json.jobLink }}",
+          "parse_mode": "Markdown"
+        },
+        "options": {}
+      },
+      "id": "telegram-node",
+      "name": "📲 Telegram Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 100]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.callmebot.com/whatsapp.php",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            { "name": "phone",  "value": "={{ $vars.WHATSAPP_PHONE }}" },
+            { "name": "text",   "value": "=🔥 JOB ALERT!\n{{ $json.jobTitle }}\nReply ready in email!\n{{ $json.jobLink }}" },
+            { "name": "apikey", "value": "={{ $vars.CALLMEBOT_API_KEY }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "whatsapp-node",
+      "name": "📱 WhatsApp Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 240]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $vars.ALERT_EMAIL }}",
+        "subject": "=🔥 Job Match: {{ $json.jobTitle }}",
+        "emailType": "html",
+        "message": "=<html><body style='font-family:Arial;max-width:660px;margin:auto;padding:20px;background:#f4f4f4'><div style='background:linear-gradient(135deg,#0f0f1a,#1a1a2e);padding:28px;border-radius:12px;margin-bottom:16px'><h2 style='color:#00ff88;margin:0'>🔥 New Job Match!</h2><p style='color:#888;margin:6px 0 0;font-size:13px'>{{ $json.jobSource }} • {{ $now.toLocaleString() }}</p></div><div style='background:white;border-radius:10px;padding:22px;margin-bottom:16px'><h3 style='margin:0 0 12px'>{{ $json.jobTitle }}</h3><p style='color:#555;background:#f9f9f9;padding:14px;border-radius:8px;border-left:4px solid #007bff'>{{ $json.jobDesc }}</p><a href='{{ $json.jobLink }}' style='display:inline-block;margin-top:14px;background:#007bff;color:white;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold'>View Job →</a></div><div style='background:#f0fff4;border:2px solid #00cc66;border-radius:10px;padding:22px'><h3 style='margin:0 0 6px;color:#006622'>✅ Your AI Reply — Copy & Send</h3><div style='background:white;border:1px solid #ccc;border-radius:8px;padding:16px;font-size:14px;line-height:1.7;white-space:pre-wrap'>{{ $json.aiReply }}</div></div><p style='text-align:center;color:#aaa;font-size:11px;margin-top:20px'>Job Hunter Agent v3 — Running 24/7</p></body></html>",
+        "options": {}
+      },
+      "id": "email-node",
+      "name": "📧 Email Alert",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1760, 380],
+      "credentials": {
+        "gmailOAuth2": { "id": "gmail-creds", "name": "Gmail Account" }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $vars.SMS_GATEWAY_EMAIL }}",
+        "subject": "Job Alert",
+        "emailType": "text",
+        "message": "=JOB: {{ $json.jobTitle.substring(0,80) }} - Check email for AI reply!",
+        "options": {}
+      },
+      "id": "sms-gateway-node",
+      "name": "💬 SMS Gateway",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1760, 520],
+      "credentials": {
+        "gmailOAuth2": { "id": "gmail-creds", "name": "Gmail Account" }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://textbelt.com/text",
+        "method": "POST",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "body": {
+          "phone":   "={{ $vars.TEXTBELT_PHONE }}",
+          "message": "=🔥 Job: {{ $json.jobTitle.substring(0,60) }} - Check Telegram!",
+          "key":     "textbelt"
+        },
+        "options": {}
+      },
+      "id": "textbelt-node",
+      "name": "📟 SMS Textbelt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1760, 660]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $input.first().json;\nconsole.log(JSON.stringify({time:new Date().toISOString(),title:j.jobTitle,source:j.jobSource,link:j.jobLink}));\nreturn [{ json: { logged: true, title: j.jobTitle } }];"
+      },
+      "id": "log-node",
+      "name": "📝 Log Job",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1980, 380]
+    }
+  ],
+  "connections": {
+    "⏰ Trigger Every 30 Min":  { "main": [[{ "node": "📋 Job Sources",       "type": "main", "index": 0 }]] },
+    "📋 Job Sources":           { "main": [[{ "node": "Split Sources",         "type": "main", "index": 0 }]] },
+    "Split Sources":            { "main": [[{ "node": "🌐 Fetch RSS",          "type": "main", "index": 0 }]] },
+    "🌐 Fetch RSS":             { "main": [[{ "node": "🎯 Parse & Filter",     "type": "main", "index": 0 }]] },
+    "🎯 Parse & Filter":        { "main": [[{ "node": "✅ Valid Job?",          "type": "main", "index": 0 }]] },
+    "✅ Valid Job?":             { "main": [[{ "node": "🤖 AI Generates Reply", "type": "main", "index": 0 }]] },
+    "🤖 AI Generates Reply":    { "main": [[{ "node": "🔗 Merge Data",         "type": "main", "index": 0 }]] },
+    "🔗 Merge Data": { "main": [[
+      { "node": "📲 Telegram Alert", "type": "main", "index": 0 },
+      { "node": "📱 WhatsApp Alert", "type": "main", "index": 0 },
+      { "node": "📧 Email Alert",    "type": "main", "index": 0 },
+      { "node": "💬 SMS Gateway",    "type": "main", "index": 0 },
+      { "node": "📟 SMS Textbelt",   "type": "main", "index": 0 }
+    ]]},
+    "📧 Email Alert":    { "main": [[{ "node": "📝 Log Job", "type": "main", "index": 0 }]] },
+    "📲 Telegram Alert": { "main": [[{ "node": "📝 Log Job", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1", "saveManualExecutions": true },
+  "pinData": {},
+  "tags": [{ "id": "1", "name": "job-hunter-v3" }]
+}

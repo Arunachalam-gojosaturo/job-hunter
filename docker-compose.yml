@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  job-hunter:
+    build: .
+    container_name: job-hunter-v3
+    restart: always
+    ports:
+      - "5678:5678"
+    env_file: .env
+    volumes:
+      - ./logs:/app/logs
+      - n8n_data:/root/.n8n
+volumes:
+  n8n_data:
