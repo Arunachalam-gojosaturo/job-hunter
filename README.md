@@ -1,253 +1,350 @@
-# 🔥 Job Hunter Agent v3
-### Scans Reddit + Upwork → AI writes reply → Alerts on Telegram + WhatsApp + Email + SMS
-### Runs 24/7 on cloud — PC can be completely OFF
+<div align="center">
+
+<img src="https://capsule-render.vercel.app/api?type=cylinder&color=0:0d0a00,50:2d1f00,100:0d0a00&height=200&section=header&text=JOB%20HUNTER%20AGENT&fontSize=58&fontColor=f59e0b&fontAlignY=50&animation=fadeIn&desc=v3.0%20%7C%20Scan%20%E2%80%A2%20Filter%20%E2%80%A2%20Reply%20%E2%80%A2%20Alert%20%E2%80%A2%20Repeat%20%E2%80%A2%2024%2F7&descSize=15&descAlignY=72&descColor=78716c"/>
+
+</div>
+
+<div align="center">
+
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=14&pause=900&color=F59E0B&center=true&vCenter=true&width=800&lines=INITIALIZING+JOB+HUNTER+AGENT+v3...;Connecting+to+Reddit+API...+%E2%9C%93;Connecting+to+Upwork+Scraper...+%E2%9C%93;Groq+%2F+OpenAI+%2F+Ollama+AI+Engine...+%E2%9C%93;Telegram+%7C+WhatsApp+%7C+Email+%7C+SMS...+%E2%9C%93;n8n+Workflow+Engine...+%E2%9C%93;%5B+ALL+SYSTEMS+ONLINE+%5D+Hunting+jobs+every+30+minutes." alt="Typing SVG"/>
+
+</div>
+
+<br/>
+
+<div align="center">
+
+![Python](https://img.shields.io/badge/Python-3.10+-f59e0b?style=flat-square&logo=python&logoColor=black&labelColor=0d0a00)
+![n8n](https://img.shields.io/badge/Workflow-n8n-f59e0b?style=flat-square&labelColor=0d0a00)
+![AI](https://img.shields.io/badge/AI-Groq%20%7C%20OpenAI%20%7C%20Ollama-f59e0b?style=flat-square&labelColor=0d0a00)
+![Cloud](https://img.shields.io/badge/Cloud-Oracle%20Always--Free-f59e0b?style=flat-square&labelColor=0d0a00)
+![License](https://img.shields.io/badge/Cost-100%25%20FREE-22c55e?style=flat-square&labelColor=0d0a00)
+![Status](https://img.shields.io/badge/Status-24%2F7%20ACTIVE-f59e0b?style=flat-square&labelColor=0d0a00)
+
+</div>
 
 ---
 
-## 📱 Alert Channels
+## `>> WHAT DOES IT DO?`
 
-| Channel | Cost | Speed | Setup |
-|---------|------|-------|-------|
-| Telegram Bot | FREE forever | Instant | 2 mins |
-| WhatsApp (Callmebot) | FREE | ~30 sec | 3 mins |
-| Email (Gmail) | FREE | ~1 min | 2 mins |
-| SMS via Email Gateway | FREE forever | ~1 min | 1 min |
-| Textbelt SMS | FREE (1/day) | Instant | 0 mins |
-
----
-
-## ⚡ STEP-BY-STEP SETUP
+```
+Scans Reddit + Upwork every 30 minutes for jobs matching your skills.
+AI reads each listing, decides if it's a match, writes a professional reply.
+Fires alerts to ALL your devices simultaneously — even while your PC is OFF.
+Zero cost. Zero babysitting. Just money in.
+```
 
 ---
 
-### STEP 1 — Run Setup Script
+## `>> ALERT CHANNELS`
+
+<div align="center">
+
+| `CHANNEL` | `COST` | `SPEED` | `SETUP TIME` |
+|---|:---:|:---:|:---:|
+| 📲 Telegram Bot | `FREE forever` | Instant | 2 mins |
+| 📱 WhatsApp (Callmebot) | `FREE` | ~30 sec | 3 mins |
+| 📧 Gmail | `FREE` | ~1 min | 2 mins |
+| 💬 SMS via Carrier Gateway | `FREE forever` | ~1 min | 1 min |
+| 📟 Textbelt SMS | `FREE (1/day)` | Instant | 0 mins |
+
+</div>
+
+---
+
+## `>> AGENT LOOP`
+
+```
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                    AGENT WAKES EVERY 30 MINS                        │
+  │                                                                      │
+  │   [Reddit API]  ──┐                                                  │
+  │   [Upwork]      ──┴──► [Job Aggregator] ──► [AI Filter + Scorer]   │
+  │                                                    │                 │
+  │                                             Skill match? YES        │
+  │                                                    │                 │
+  │                                          [AI Reply Generator]       │
+  │                                                    │                 │
+  │                         ┌─────────────────────────┤                 │
+  │                         ▼         ▼         ▼     ▼                 │
+  │                    Telegram   WhatsApp   Email   SMS                 │
+  │                         │                                            │
+  │                    logs/jobs_found.log ← archived                   │
+  │                         │                                            │
+  │                   sleeps 30 mins → repeats forever                  │
+  └─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## `>> SETUP — 10 STEPS TO GO LIVE`
+
+### `STEP 1` — Clone & Prepare
+
 ```bash
+git clone https://github.com/Arunachalam-gojosaturo/job-hunter-agent-v3
+cd job-hunter-agent-v3
 chmod +x setup.sh start.sh stop.sh start_cloud.sh
 ./setup.sh
 ```
 
 ---
 
-### STEP 2 — Setup Telegram Bot (FREE, 2 mins)
+### `STEP 2` — Telegram Bot `[FREE · 2 mins]`
+
 ```
-1. Open Telegram app
-2. Search for: @BotFather
-3. Send: /newbot
-4. Enter a name: JobHunterBot
-5. Enter username: myjobhunter_bot
-6. Copy the TOKEN it gives you
+1. Open Telegram → search @BotFather
+2. Send: /newbot
+3. Name it: JobHunterBot
+4. Username: myjobhunter_bot
+5. Copy the TOKEN
 
-7. Now get your Chat ID:
-   - Message your new bot once (send "hi")
-   - Open this URL in browser:
-     https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
-   - Find "chat":{"id": 123456789}
-   - That number is your CHAT_ID
+6. Get your Chat ID:
+   - Send "hi" to your bot
+   - Open: https://api.telegram.org/bot<TOKEN>/getUpdates
+   - Find "chat":{"id": 123456789} — that's your CHAT_ID
 
-8. Add to .env:
-   TELEGRAM_BOT_TOKEN=your_token
-   TELEGRAM_CHAT_ID=your_chat_id
+7. Add to .env:
+   TELEGRAM_BOT_TOKEN = your_token
+   TELEGRAM_CHAT_ID   = your_chat_id
 ```
 
 ---
 
-### STEP 3 — Setup WhatsApp (FREE, 3 mins)
+### `STEP 3` — WhatsApp via Callmebot `[FREE · 3 mins]`
+
 ```
-1. Save this number in your phone contacts:
-   +34 644 59 21 48
-   (name it: Callmebot)
-
-2. Send this WhatsApp message to that number:
-   I allow callmebot to send me messages
-
-3. You will receive an API key via WhatsApp
+1. Save +34 644 59 21 48 as "Callmebot" in contacts
+2. WhatsApp them: "I allow callmebot to send me messages"
+3. They'll reply with your API key
 
 4. Add to .env:
-   WHATSAPP_PHONE=+91XXXXXXXXXX
-   CALLMEBOT_API_KEY=the_key_you_received
+   WHATSAPP_PHONE      = +91XXXXXXXXXX
+   CALLMEBOT_API_KEY   = the_key_received
 ```
 
 ---
 
-### STEP 4 — Setup Gmail Alerts (FREE, 2 mins)
+### `STEP 4` — Gmail Alerts `[FREE · 2 mins]`
+
 ```
 1. Go to: https://myaccount.google.com/apppasswords
-2. Select: Mail + Windows Computer
-3. Click Generate
-4. Copy the 16-character password (like: abcd efgh ijkl mnop)
-5. Remove spaces when pasting
+2. Select: Mail + Windows Computer → Generate
+3. Copy the 16-char password (remove spaces)
 
-6. Add to .env:
-   GMAIL_USER=your@gmail.com
-   GMAIL_APP_PASSWORD=abcdefghijklmnop
-   ALERT_EMAIL=your@gmail.com
-```
-
----
-
-### STEP 5 — Setup FREE SMS (1 min)
-```
-Find your carrier gateway email:
-
-Airtel : 9999999999@airtelmail.in
-Jio    : 9999999999@jio.com
-Vi/Voda: 9999999999@vitext.com
-BSNL   : 9999999999@bsnlmobile.in
-
-Replace 9999999999 with your actual phone number.
-
-Add to .env:
-SMS_GATEWAY_EMAIL=9999999999@jio.com
-TEXTBELT_PHONE=+919999999999
-```
-
----
-
-### STEP 6 — Setup AI (Pick One)
-
-#### Option A: OpenAI (free credits for new accounts)
-```
-1. Go to: https://platform.openai.com
-2. Sign up → you get free credits
-3. Go to API Keys → Create new key
 4. Add to .env:
-   OPENAI_API_KEY=sk-...
+   GMAIL_USER          = your@gmail.com
+   GMAIL_APP_PASSWORD  = abcdefghijklmnop
+   ALERT_EMAIL         = your@gmail.com
 ```
 
-#### Option B: Ollama LOCAL (100% free forever, no internet needed)
-```bash
-# Install Ollama
-curl https://ollama.ai/install.sh | sh
+---
 
-# Download AI model (one time)
+### `STEP 5` — Free SMS via Carrier Gateway `[1 min]`
+
+```bash
+# Indian carriers — replace 9999999999 with your number:
+Airtel  →  9999999999@airtelmail.in
+Jio     →  9999999999@jio.com
+Vi/Voda →  9999999999@vitext.com
+BSNL    →  9999999999@bsnlmobile.in
+
+# Add to .env:
+SMS_GATEWAY_EMAIL  = 9999999999@jio.com
+TEXTBELT_PHONE     = +919999999999
+```
+
+---
+
+### `STEP 6` — AI Engine `[Pick One]`
+
+```bash
+# ── OPTION A: OpenAI (free credits for new accounts) ──────────────
+# Go to: https://platform.openai.com → API Keys → Create key
+# .env:
+OPENAI_API_KEY = sk-...
+
+# ── OPTION B: Ollama LOCAL (100% free forever, no internet) ───────
+curl https://ollama.ai/install.sh | sh
 ollama pull mistral
 
-# In .env set:
-USE_OLLAMA=true
-OLLAMA_MODEL=mistral
+# .env:
+USE_OLLAMA   = true
+OLLAMA_MODEL = mistral
+
+# ── OPTION C: Groq (free tier, ultra-fast) ────────────────────────
+# Go to: https://console.groq.com → API Keys
+# .env:
+GROQ_API_KEY = gsk_...
 ```
 
 ---
 
-### STEP 7 — Fill Your Profile in .env
-```
-YOUR_NAME=YourName
-YOUR_SKILLS=Full Stack Developer, Cybersecurity, Python, n8n, Linux
-YOUR_DELIVERY=24 hours
-YOUR_RATE=Starting at $30
+### `STEP 7` — Fill Your Profile
+
+```ini
+YOUR_NAME      = Arunachalam
+YOUR_SKILLS    = Full Stack Dev, Python, Linux, Cybersecurity, React, TypeScript
+YOUR_DELIVERY  = 24 hours
+YOUR_RATE      = Starting at $30
 ```
 
 ---
 
-### STEP 8 — Start the Agent
+### `STEP 8` — Launch
+
 ```bash
 ./start.sh
+
+# Monitor live:
+tail -f logs/agent.log
+cat  logs/jobs_found.log
 ```
 
 ---
 
-### STEP 9 — Setup n8n Workflow
+### `STEP 9` — n8n Workflow
+
 ```
-1. Open browser: http://localhost:5678
-2. Create account (first time only)
-3. Click "+" → New Workflow
-4. Click ⋮ menu → Import from File
-5. Select: workflows/job_hunter_v3.json
-6. Click on "📧 Email Alert" node → add Gmail credential
-7. Click the RED toggle at top → turns GREEN
-8. Agent is now ACTIVE!
+1. Open: http://localhost:5678
+2. New account (first time only)
+3. New Workflow → ⋮ → Import from File
+4. Select: workflows/job_hunter_v3.json
+5. Click "📧 Email Alert" node → add Gmail credential
+6. Toggle RED → GREEN (top right)
+7. Workflow is LIVE ✓
 ```
 
 ---
 
-### STEP 10 — Deploy to Cloud (24/7, PC OFF)
+### `STEP 10` — Deploy 24/7 `[PC OFF]`
 
-#### Easiest: Oracle Cloud Always-Free VPS
-```
-1. Go to: https://oracle.com/cloud/free
-2. Sign up (free, needs debit card for verification only)
-3. Create Instance:
-   - Image: Ubuntu 22.04
-   - Shape: VM.Standard.A1.Flex (ALWAYS FREE)
-   - RAM: 24GB, CPU: 4 — completely free forever
-4. Download SSH key
-5. Get your VPS Public IP
+<div align="center">
+<table>
+<tr>
+<td width="60%" valign="top">
 
-6. Upload and deploy:
-   scp -i your_key.pem -r ./ ubuntu@YOUR_IP:~/job-hunter-v3/
-   ssh -i your_key.pem ubuntu@YOUR_IP
-   cd job-hunter-v3
-   ./setup.sh
-   nano .env   ← fill keys
-   ./start.sh
+#### ☁️ Oracle Cloud Always-Free VPS *(Recommended)*
 
-7. Access n8n from anywhere:
-   http://YOUR_VPS_IP:5678
-```
-
-#### Easiest Alternative: Docker
 ```bash
-# Make sure .env is filled first
+# 1. Sign up: https://oracle.com/cloud/free
+#    (free debit card verification only)
+# 2. Create Instance:
+#    Image : Ubuntu 22.04
+#    Shape : VM.Standard.A1.Flex  ← FREE FOREVER
+#    RAM   : 24 GB
+#    CPU   : 4 cores
+
+# 3. Upload + Deploy:
+scp -i key.pem -r ./ ubuntu@VPS_IP:~/job-hunter-v3/
+ssh -i key.pem ubuntu@VPS_IP
+cd job-hunter-v3 && ./setup.sh
+nano .env       # fill your keys
+./start.sh      # agent is now live 24/7
+
+# 4. Access n8n from anywhere:
+#    http://YOUR_VPS_IP:5678
+```
+
+</td>
+<td width="40%" valign="top">
+
+#### 🐳 Docker *(Easiest)*
+
+```bash
+# Fill .env first, then:
 docker-compose up -d
 
-# View logs
+# Logs:
 docker-compose logs -f
 
-# Agent restarts automatically if it crashes
-# Survives reboots automatically
+# Auto-restarts on crash ✓
+# Survives reboots ✓
+# Zero manual babysitting ✓
 ```
+
+</td>
+</tr>
+</table>
+</div>
 
 ---
 
-## 📊 What Happens Every 30 Minutes
-
-```
-Agent wakes up
-  ↓
-Scans 8 job sources (Reddit + Upwork)
-  ↓
-AI filters jobs matching your skills
-  ↓
-AI writes professional reply for each job
-  ↓
-Sends to ALL channels simultaneously:
-  ├── 📲 Telegram  (instant, with reply)
-  ├── 📱 WhatsApp  (quick alert)
-  ├── 📧 Email     (full details + formatted reply)
-  ├── 💬 SMS       (via carrier gateway, free)
-  └── 📟 Textbelt  (SMS, 1 free per day)
-  ↓
-Logs job to logs/jobs_found.log
-  ↓
-Sleeps 30 mins → repeats forever
-```
-
----
-
-## 🛠 Commands
+## `>> COMMANDS`
 
 ```bash
-./start.sh          # Start everything
-./stop.sh           # Stop everything
-./setup.sh          # Re-run setup
+./start.sh                    # Start all services
+./stop.sh                     # Stop all services
+./setup.sh                    # Re-run initial setup
 
-tail -f logs/agent.log        # Watch live
-cat  logs/jobs_found.log      # See all jobs found
-tail -f logs/n8n.log          # n8n logs
+tail -f logs/agent.log        # Watch live agent output
+cat  logs/jobs_found.log      # All jobs found so far
+tail -f logs/n8n.log          # n8n workflow engine logs
 ```
 
 ---
 
-## 💰 Expected Results
+## `>> PROJECTED EARNINGS`
 
-| Day | Jobs Found | Action | Earning |
-|-----|-----------|--------|---------|
-| 1 | 5–20 alerts | Reply to best ones | $0–$50 |
-| 2 | 5–20 alerts | 1–2 clients reply | $30–$100 |
-| 3 | 5–20 alerts | First payment | $50–$200 |
-| Week 1 | 50–100+ | Multiple clients | $100–$500 |
+<div align="center">
+
+| `TIMELINE` | `ALERTS` | `OUTCOME` | `EARNING` |
+|:---:|:---:|---|:---:|
+| Day 1 | 5–20 | Reply to best matches | `$0 – $50` |
+| Day 2 | 5–20 | 1–2 clients respond | `$30 – $100` |
+| Day 3 | 5–20 | First payment arrives | `$50 – $200` |
+| Week 1 | 50–100+ | Multiple active clients | `$100 – $500` |
+
+</div>
+
+> ⚡ *Zero upfront cost. Runs while you sleep. Pays while you rice your desktop.*
 
 ---
 
-Built with ❤️ for zero-investment freelancing
-Stack: Python 3.10+ • n8n • Oracle Cloud Free • Telegram API • Callmebot
+## `>> TECH STACK`
+
+<div align="center">
+
+| `MODULE` | `TECH` | `PURPOSE` |
+|---|---|---|
+| 🔍 Job Scraping | `Reddit API + Upwork` | Source raw job listings |
+| 🧠 AI Engine | `Groq / OpenAI / Ollama` | Filter + write replies |
+| 🔁 Workflow | `n8n` | Orchestrate automation |
+| 📲 Telegram | `Telegram Bot API` | Instant alerts with AI reply |
+| 📱 WhatsApp | `Callmebot API` | Quick mobile alerts |
+| 📧 Email | `Gmail SMTP` | Detailed formatted alerts |
+| 💬 SMS | `Carrier Gateway + Textbelt` | No-app fallback alerts |
+| ☁️ Hosting | `Oracle Cloud Free / Docker` | 24/7 with PC off |
+| 🐍 Runtime | `Python 3.10+` | Agent core |
+
+</div>
+
+---
+
+## `>> CREATOR`
+
+<div align="center">
+
+```
+  BUILT BY   : ARUNACHALAM
+  ALIAS      : gojosaturo
+  BASE       : Vellore, Tamil Nadu 🇮🇳
+  OS         : Arch Linux + Hyprland
+  STACK      : Python · Node.js · Linux · AI · Cybersecurity
+  MOTIVE     : Zero-investment freelancing on full autopilot.
+```
+
+[![GitHub](https://img.shields.io/badge/GITHUB-Arunachalam--gojosaturo-f59e0b?style=for-the-badge&logo=github&logoColor=black&labelColor=0d0a00)](https://github.com/Arunachalam-gojosaturo)
+[![Instagram](https://img.shields.io/badge/INSTAGRAM-@saturogojo__ac-f59e0b?style=for-the-badge&logo=instagram&logoColor=black&labelColor=0d0a00)](https://instagram.com/saturogojo_ac)
+
+</div>
+
+---
+
+<div align="center">
+
+*Built for zero-investment freelancing. Fork it. Run it. Get paid.*
+
+<img src="https://capsule-render.vercel.app/api?type=cylinder&color=0:0d0a00,50:2d1f00,100:0d0a00&height=90&section=footer&text=JOB+HUNTER+AGENT+v3+%7C+BUILT+BY+ARUNACHALAM&fontSize=14&fontColor=f59e0b&animation=fadeIn"/>
+
+</div>
